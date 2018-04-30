@@ -20,4 +20,50 @@ exports.handler = (event, context, callback) => {
 
 function processEvent(event, context, callback) {
     console.log('Calling MongoDB Atlas from AWS Lambda with event: ' + JSON.stringify(event));
+    var jsonContents = JSON.parse(JSON.stringify(event));
+
+    // date conversion for grades array
+    if(jsonContents.grades != null) {
+        for (var i =0, len=jsonContents.grades.length; i < len; i++) {
+            // use the following line if you want to preserve the original dates
+            // jsonContents.grades[i].date = new Date(jsonContents.grades[i].date)
+
+            // the following line assigns the current date so we can more easily differentiate between similar records
+            jsonContents.grades[i].date = new Date();
+        }
+    }
+
+    context.callbackWaitsForEmptyEventLoop = false;
+
+    try {
+        if (cachedDb == null) {
+            console.log('=> connecting to database');
+            MongoClient.connect(atlas_connection_uri, function(err, client) {
+                cachedDb = client.db('travel');
+                return createDoc(cachedDb, jsonContents, callback);
+            });
+        }
+        else {
+            createDoc(cachedDb, jsonContents, callback);
+        }
+    }
+    catch (err) {
+        console.error('an error occurred'. err);
+    }
+}
+
+function createDoc(db, json, callback) {
+    db.collection('restaurants').insertOne(json, function(err, result) {
+        if(err != null) {
+            console.error("an error occurred in createDoc", err);
+            callback(null, JSON.stringify(err));
+        }
+        else {
+            console.log("Kudos! You just created an entry into the restaurants collection with id: " + result.insertId);
+            callback(null, "SUCCESS");
+        }
+        // we don't need to close the connection thanks to context.callbackWaitsForEmptyEventLoop = false (above)
+        // this will let our function re-use the connection on the next called (if it can re-use the same lambda container)
+        // db.close()
+    });
 }
