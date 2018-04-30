@@ -1,0 +1,31 @@
+{
+  "name": "lambda-atlas-create-doc",
+  "version": "0.1.0",
+  "description": "serverless architecture practice project",
+  "main": "app.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Elbertbiggs360/lambda-atlas-create-doc.git"
+  },
+  "keywords": [
+    "serverless",
+    "lambda",
+    "aws",
+    "mongodb",
+    "atlas",
+    "nodejs",
+    "architecture"
+  ],
+  "author": "Bruce Bigirwenkya (brucebigirwenkya@gmail.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Elbertbiggs360/lambda-atlas-create-doc/issues"
+  },
+  "homepage": "https://github.com/Elbertbiggs360/lambda-atlas-create-doc#readme",
+  "dependencies": {
+    "mongodb": "^3.0.7"
+  }
+}
